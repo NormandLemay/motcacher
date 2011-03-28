@@ -1,0 +1,28 @@
+<h1>Listing grilles</h1>
+
+<table>
+  <tr>
+    <th>X y</th>
+    <th>Lettre</th>
+    <th>Numero</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @grilles.each do |grille| %>
+  <tr>
+    <td><%= grille.position_x %></td>
+    <td><%= grille.position_y %></td>
+    <td><%= grille.lettre %></td>
+    <td><%= grille.numeros %></td>
+    <td><%= link_to 'Show',:controller => "grilles",:action => "show", :id => grille.numeros %></td>
+    <td><%= link_to 'Edit', edit_grille_path(grille) %></td>
+    <td><%= link_to 'Destroy', grille, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Grille', new_grille_path %>

@@ -1,0 +1,13 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  lettre: MyString
+  numeros: 1
+  position_x: 1
+  position_y: 1
+
+two:
+  lettre: MyString
+  numeros: 1
+  position_x: 1
+  position_y: 1

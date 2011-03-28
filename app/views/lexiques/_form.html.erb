@@ -1,0 +1,21 @@
+<%= form_for(@lexique) do |f| %>
+  <% if @lexique.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@lexique.errors.count, "error") %> prohibited this lexique from being saved:</h2>
+
+      <ul>
+      <% @lexique.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :mot %><br />
+    <%= f.text_field :mot %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

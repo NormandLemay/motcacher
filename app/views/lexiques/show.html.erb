@@ -1,0 +1,16 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Mot:</b>
+  <%= @lexique.mot %>
+</p>
+
+<p>
+  <b>Nbr lettre:</b>
+  <%= @lexique.nbr_lettre %>
+</p>
+
+
+<%= link_to 'Edit', edit_lexique_path(@lexique) %> |
+<%= link_to 'Back', lexiques_path %> |
+<%= link_to 'New Lexique', new_lexique_path %>

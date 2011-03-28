@@ -1,0 +1,11 @@
+<p id="notice"><%= notice %></p>
+
+<table border="2">
+<% @grilles.each do |grille| %>
+  <%  %>
+  <tr>
+    <td><%= grille.lettre %></td>
+  </tr>
+<% end %>
+</table>
+<%= link_to 'Back', grilles_path %>
