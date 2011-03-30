@@ -1,11 +1,12 @@
 <p id="notice"><%= notice %></p>
-
+<%= @grilles.display_name %>
 <table border="2">
-<% @grilles.each do |grille| %>
-  <%  %>
-  <tr>
-    <td><%= grille.lettre %></td>
-  </tr>
-<% end %>
+  <% (0...10).each do |x| %>
+      <tr>
+        <% (0...10).each do |y| %>
+            <td width="30" align="center" height="30"><%= @grilles.get_val_x_y(x,y).upcase %></td>
+        <% end %>
+      </tr>
+  <% end %>
 </table>
 <%= link_to 'Back', grilles_path %>

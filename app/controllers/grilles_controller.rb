@@ -14,8 +14,8 @@ class GrillesController < ApplicationController
   # GET /grilles/1
   # GET /grilles/1.xml
   def show
-    @grilles = Grille.find_all_by_numeros(params[:id], :order => 'position_x, position_y desc')
-
+    @grilles = Grille.find(params[:id])
+    # @matrice = @grilles.rebuild_matrice
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml => @grille }
@@ -25,22 +25,12 @@ class GrillesController < ApplicationController
   # GET /grilles/new
   # GET /grilles/new.xml
   def new
-   # @grille = Grille.new
-    prng = Random.new(Time.new.to_i)
-    position_x = prng.rand(10)
-    position_y = prng.rand(10)
-    nombre_lettre = prng.rand(3..10)
-    lexique = Lexique.find_by_nbr_lettre(nombre_lettre)
+    @grille = Grille.new()
 
-      horizontal_droite(lexique.mot,position_x,position_y)#,@grille)
-
-    @grille = Grille.find_by_numeros(1)
-
-
-#    respond_to do |format|
-#      format.html # new.html.erb
-#      format.xml  { render :xml => @grille }
-#    end
+    respond_to do |format|
+      format.html # new.html.erb
+      format.xml  { render :xml => @grille }
+    end
   end
 
   # GET /grilles/1/edit
@@ -52,6 +42,50 @@ class GrillesController < ApplicationController
   # POST /grilles.xml
   def create
     @grille = Grille.new(params[:grille])
+    @grille.x = 10
+    @grille.y = 10
+    prng = Random.new(Time.new.to_i)
+    (1..5).each do
+    @grille.remplir_grille(prng)
+    end
+#    (1..5).each do
+#      prng = Random.new(Time.new.to_i)
+#      x = prng.rand(0..9)
+#      y = prng.rand(0..9)
+#      sense = prng.rand(0..7)
+#      nbr_lettre = prng.rand(3..10)
+#      Rails.logger.debug "normand dans la boucle #{x} , #{y}, #{sense}, #{nbr_lettre}, #{Time.new.to_i}"
+#      lexique = Lexique.find_by_nbr_lettre(5)
+#      #@grille.find_sense(nombre_lettre,position_x,position_y)
+#      case sense
+#        when 0
+#          @grille.horizontal_droite(lexique.mot,x,y)#0,0)
+#        when 1
+#          @grille.horizontal_gauche(lexique.mot,x,y)#6,1)
+#        when 2
+#          @grille.vertical_bas(lexique.mot,x,y)#0,2)
+#        when 3
+#          @grille.vertical_haut(lexique.mot,x,y)#1,6)
+#        when 4
+#          @grille.diagonale_droite_bas(lexique.mot,x,y)#1,1)
+#        when 5
+#          @grille.diagonale_droite_haut(lexique.mot,x,y)#4,5)
+#        when 6
+#          @grille.diagonale_gauche_bas(lexique.mot,x,y)#6,5)
+#        when 7
+#          @grille.diagonale_gauche_haut(lexique.mot,x,y)#7,9)
+#        else
+#          @grille.horizontal_droite(lexique.mot,x,y)#0,0)
+#      end
+#    end
+#    @grille.horizontal_droite(lexique.mot,0,0)
+#    @grille.horizontal_gauche(lexique.mot,6,1)
+#    @grille.vertical_bas(lexique.mot,0,2)
+#    @grille.vertical_haut(lexique.mot,1,6)
+#    @grille.diagonale_droite_bas(lexique.mot,1,1)
+#    @grille.diagonale_droite_haut(lexique.mot,4,5)
+#    @grille.diagonale_gauche_bas(lexique.mot,6,5)
+#    @grille.diagonale_gauche_haut(lexique.mot,7,9)
 
     respond_to do |format|
       if @grille.save
@@ -89,88 +123,6 @@ class GrillesController < ApplicationController
     respond_to do |format|
       format.html { redirect_to(grilles_url) }
       format.xml  { head :ok }
-    end
-  end
-
-  def horizontal_droite(mot,position_x,position_y)
-    mot.each_char do |x|
-      grille = Grille.new
-      Rails.logger.debug  x
-      grille.position_x= position_x.to_i
-      grille.position_y= position_y.to_i
-      grille.lettre = x
-      position_x = position_x + 1
-      grille.numeros = 1
-      grille.save
-    end
-  end
-
-  def horizontal_gauche(mot,position_x,position_y, grille)
-    mot.each_char do |x|
-      Rails.logger.debug  x
-      grille.x_y = "#{position_x},#{position_y}"
-      grille.lettre = x
-      position_x =- 1
-    end
-  end
-
-  def vertical_bas(mot,position_x,position_y, grille)
-    mot.each_char do |x|
-      Rails.logger.debug  x
-      grille.x_y = "#{position_x},#{position_y}"
-      grille.lettre = x
-      position_y =- 1
-    end
-  end
-
-  def vertical_haut(mot,position_x,position_y, grille)
-    mot.each_char do |x|
-      Rails.logger.debug  x
-      grille.x_y = "#{position_x},#{position_y}"
-      grille.lettre = x
-      position_y =+ 1
-    end
-  end
-
-  def diagonale_droite_bas(mot,position_x,position_y, grille)
-    mot.each_char do |x|
-      Rails.logger.debug  x
-      grille.x_y = "#{position_x},#{position_y}"
-      grille.lettre = x
-      position_y =- 1
-      position_x =+ 1
-    end
-  end
-
-  def diagonale_droite_haut(mot,position_x,position_y, grille)
-    mot.each_char do |x|
-      Rails.logger.debug  x
-      grille.x_y = "#{position_x},#{position_y}"
-      grille.lettre = x
-      position_y =+ 1
-      position_x =+ 1
-    end
-  end
-
-  def diagonale_gauche_bas(mot,position_x,position_y, grille)
-    mot.each_char do |x|
-      Rails.logger.debug  x
-      grille.x_y = "#{position_x},#{position_y}"
-      grille.lettre = x
-      position_y =- 1
-      position_x =- 1
-    end
-  end
-
-  def diagonale_gauche_haut(mot,position_x,position_y, grille)
-    mot.each_char do |x|
-      Rails.logger.debug  x
-      Rails.logger.debug  position_x
-      Rails.logger.debug  position_y
-      grille.x_y = "#{position_x},#{position_y}"
-      grille.lettre = x
-      position_y =+ 1
-      position_x =- 1
     end
   end
 end

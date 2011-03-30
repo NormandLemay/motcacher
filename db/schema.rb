@@ -10,13 +10,15 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110328012116) do
+ActiveRecord::Schema.define(:version => 20110328174816) do
 
   create_table "grilles", :force => true do |t|
     t.text     "lettres"
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "x"
+    t.integer  "y"
   end
 
   create_table "lexiques", :force => true do |t|

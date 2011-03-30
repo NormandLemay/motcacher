@@ -41,7 +41,6 @@ class LexiquesController < ApplicationController
   # POST /lexiques.xml
   def create
     @lexique = Lexique.new(params[:lexique])
-    @lexique.nbr_lettre = @lexique.mot.length
     respond_to do |format|
       if @lexique.save
         format.html { redirect_to(@lexique, :notice => 'Lexique was successfully created.') }
