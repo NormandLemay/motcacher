@@ -48,28 +48,55 @@ class Grille < ActiveRecord::Base
         end
       when 5 #diagonale_droite_haut
         if x < 8 or y > 1
-          (pos_x..(9-pos_y)).each do
-            val = val + get_val_x_y(x,y)
-            y -= 1
-            x += 1
+          if x + y <= 9
+            (0..(pos_y)).each do
+              val = val + get_val_x_y(x,y)
+              y -= 1
+              x += 1
+            end
+          else
+            (pos_x..9).each do
+              val = val + get_val_x_y(x,y)
+              y -= 1
+              x += 1
+            end
           end
         end
       when 6 #diagonale_gauche_bas
-        (pos_x..9).each do
-          val = val + get_val_x_y(x,y)
-          y -= 1
-          x -= 1
+        if x > 1 or y < 8
+          if x + y <= 9
+            (0..pos_x).each do
+              val = val + get_val_x_y(x,y)
+              y += 1
+              x -= 1
+            end
+          else
+            (pos_y..9).each do
+              val = val + get_val_x_y(x,y)
+              y += 1
+              x -= 1
+            end
+          end
         end
       when 7 #diagonale_gauche_haut
-        (pos_x..(10-pos_y)).each do
-          val = val + get_val_x_y(x,y)
-          y += 1
-          x -= 1
+        if x > 1 or y > 1
+          if x + y <= 9
+            (0..pos_x).each do
+              val = val + get_val_x_y(x,y)
+              y -= 1
+              x -= 1
+            end
+          else
+            (0..pos_y).each do
+              val = val + get_val_x_y(x,y)
+              y -= 1
+              x -= 1
+            end
+          end
         end
       else
-        (pos_x..9).each do
+        (x..9).each do |x|
           val = val + get_val_x_y(x,y)
-          x += 1
         end
     end
     lexique = ""
@@ -105,7 +132,7 @@ class Grille < ActiveRecord::Base
           x = prng.rand(0..7)#9)
           y = prng.rand(0..9)
         end while get_val_x_y(x,y) != "?"
-        sense = 5#prng.rand(0..3)#7)
+        sense = 6#prng.rand(0..3)#7)
       mot = build_requete_et_retourne_mot(sense,x,y)
 
         if mot
@@ -158,14 +185,14 @@ class Grille < ActiveRecord::Base
 
   def horizontal_droite(mot,position_x,position_y)
     mot.each_char do |val|
-      Rails.logger.debug"normand valeur de get_val_x_y dans horizontal : #{position_x}, #{position_y}, val #{get_val_x_y(position_x,position_y)}"
+  #    Rails.logger.debug"normand valeur de get_val_x_y dans horizontal : #{position_x}, #{position_y}, val #{get_val_x_y(position_x,position_y)}"
       matrice[position_x.to_i][position_y.to_i] = val
       position_x += 1
     end
   end
   def horizontal_gauche(mot,position_x,position_y)
     mot.each_char do |val|
-      Rails.logger.debug"normand valeur de get_val_x_y dans horizontal : #{position_x}, #{position_y}, val #{get_val_x_y(position_x,position_y)}"
+     # Rails.logger.debug"normand valeur de get_val_x_y dans horizontal : #{position_x}, #{position_y}, val #{get_val_x_y(position_x,position_y)}"
       matrice[position_x.to_i][position_y.to_i] = val
       position_x -= 1
     end
@@ -205,18 +232,18 @@ class Grille < ActiveRecord::Base
   end
 
   def diagonale_gauche_bas(mot,position_x,position_y)
-    mot.each_char do |x|
-      matrice[position_x.to_i][position_y.to_i] = x
-      position_y = position_y + 1
-      position_x = position_x - 1
+    mot.each_char do |val|
+      matrice[position_x.to_i][position_y.to_i] = val
+      position_y += 1
+      position_x -= 1
     end
   end
 
   def diagonale_gauche_haut(mot,position_x,position_y)
-    mot.each_char do |x|
-      matrice[position_x.to_i][position_y.to_i] = x
-      position_y = position_y - 1
-      position_x = position_x - 1
+    mot.each_char do |val|
+      matrice[position_x.to_i][position_y.to_i] = val
+      position_y -= 1
+      position_x -= 1
     end
   end
 
