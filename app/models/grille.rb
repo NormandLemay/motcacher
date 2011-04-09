@@ -185,12 +185,11 @@ class Grille < ActiveRecord::Base
       end
     end
     lexique = Lexique.find(:first, :conditions => "id not in (#{@liste_mot}) and nbr_lettre ='#{nbr_lettre}'")
+    @mot_cache = lexique.id
     nbr_lettre = 0
-    Rails.logger.debug "normand voici le mot a cacher : #{lexique.mot}"
     (0...10).each do |y|
       (0...10).each do |x|
          if get_val_x_y(x,y) == "?"
-    Rails.logger.debug "normand lettre ajouter: #{lexique.mot[nbr_lettre]}   a la position (#{x},#{y})"
            matrice[x.to_i][y.to_i] = lexique.mot[nbr_lettre]
            nbr_lettre +=1
          end
@@ -282,6 +281,8 @@ class Grille < ActiveRecord::Base
     self.x ||= 10
     self.y ||= 10
     self.lettres = matrice.to_yaml
+    self.listes_mots= @liste_mot
+    self.mot_cache=@mot_cache
   end
 
   def rebuild_matrice

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110328174816) do
+ActiveRecord::Schema.define(:version => 20110409014959) do
 
   create_table "grilles", :force => true do |t|
     t.text     "lettres"
@@ -19,11 +19,20 @@ ActiveRecord::Schema.define(:version => 20110328174816) do
     t.datetime "updated_at"
     t.integer  "x"
     t.integer  "y"
+    t.string   "listes_mots"
+    t.integer  "mot_cache"
   end
 
   create_table "lexiques", :force => true do |t|
     t.string   "mot"
     t.integer  "nbr_lettre"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "listemots", :force => true do |t|
+    t.integer  "id_grille"
+    t.integer  "id_lexique"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

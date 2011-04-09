@@ -23,4 +23,18 @@
       </tr>
   <% end %>
 </table>
+
+<table>
+  <tr>
+    <th>Mot a trouver</th>
+  </tr>
+
+<% lexiques = Lexique.find(:all, :conditions => "id in (#{@grilles.listes_mots})") %>
+<% lexiques.each do |lexique| %>
+  <tr>
+    <td class='vide' onclick="cSwap(this);"><%= lexique.mot %></td>
+  </tr>
+<% end %>
+</table>
+
 <%= link_to 'Back', grilles_path %>
