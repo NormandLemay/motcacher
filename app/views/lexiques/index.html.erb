@@ -5,15 +5,12 @@
     <th>Mot</th>
     <th>Nbr lettre</th>
     <th></th>
-    <th></th>
-    <th></th>
   </tr>
 
 <% @lexiques.each do |lexique| %>
   <tr>
     <td><%= lexique.mot %></td>
     <td><%= lexique.nbr_lettre %></td>
-    <td><%= link_to 'Show', lexique %></td>
     <td><%= link_to 'Edit', edit_lexique_path(lexique) %></td>
   </tr>
 <% end %>

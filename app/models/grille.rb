@@ -8,13 +8,10 @@ class Grille < ActiveRecord::Base
   end
 
   def get_val_x_y(x,y)
-   # Rails.logger.debug"normand get_val_x_y : (#{x} , #{y})"
     return matrice[x][y]
   end
 
   def build_requete_et_retourne_mot(sense,x,y)
-
-      Rails.logger.debug"normand valeur build_requete_et_retourne_mot : #{x}, #{y}"
     val = ""
     pos_x = x
     pos_y = y
@@ -80,7 +77,7 @@ class Grille < ActiveRecord::Base
         end
       when 7 #diagonale_gauche_haut
         if x > 1 or y > 1
-          if x + y <= 9
+          if y > x
             (0..pos_x).each do
               val = val + get_val_x_y(x,y)
               y -= 1
@@ -100,22 +97,18 @@ class Grille < ActiveRecord::Base
         end
     end
     lexique = ""
-    lexique = Lexique.find(:first, :conditions => "mot GLOB '#{val}'")#build_requete(sense,x,y))
-    lexique = Lexique.find(:first, :conditions => "mot GLOB '#{val.first(val.length-1)}' ") if val.length-1 >=3 and !lexique
-    lexique = Lexique.find(:first, :conditions => "mot GLOB '#{val.first(val.length-2)}' ") if val.length-2 >=3 and !lexique
-    lexique = Lexique.find(:first, :conditions => "mot GLOB '#{val.first(val.length-3)}' ") if val.length-3 >=3 and !lexique
-    lexique = Lexique.find(:first, :conditions => "mot GLOB '#{val.first(val.length-4)}' ") if val.length-4 >=3 and !lexique
-    lexique = Lexique.find(:first, :conditions => "mot GLOB '#{val.first(val.length-5)}' ") if val.length-5 >=3 and !lexique
-    lexique = Lexique.find(:first, :conditions => "mot GLOB '#{val.first(val.length-6)}' ") if val.length-6 >=3 and !lexique
-    lexique = Lexique.find(:first, :conditions => "mot GLOB '#{val.first(val.length-7)}' ") if val.length-7 >=3 and !lexique
-
-    # Rails.logger.debug"normand toto : #{toto}"
- #   Rails.logger.debug"normand build_request : (#{pos_x} , #{pos_y})"
-   # condition = "mot GLOB '#{val}' #{toto}"
-#"mot GLOB '?a?'"
+    lexique = Lexique.find(:first, :conditions => "id not in (#{@liste_mot}) and mot GLOB '#{val}'")
+    lexique = Lexique.find(:first, :conditions => "id not in (#{@liste_mot}) and mot GLOB '#{val.first(val.length-1)}' ") if val.length-1 >=3 and !lexique
+    lexique = Lexique.find(:first, :conditions => "id not in (#{@liste_mot}) and mot GLOB '#{val.first(val.length-2)}' ") if val.length-2 >=3 and !lexique
+    lexique = Lexique.find(:first, :conditions => "id not in (#{@liste_mot}) and mot GLOB '#{val.first(val.length-3)}' ") if val.length-3 >=3 and !lexique
+    lexique = Lexique.find(:first, :conditions => "id not in (#{@liste_mot}) and mot GLOB '#{val.first(val.length-4)}' ") if val.length-4 >=3 and !lexique
+    lexique = Lexique.find(:first, :conditions => "id not in (#{@liste_mot}) and mot GLOB '#{val.first(val.length-5)}' ") if val.length-5 >=3 and !lexique
+    lexique = Lexique.find(:first, :conditions => "id not in (#{@liste_mot}) and mot GLOB '#{val.first(val.length-6)}' ") if val.length-6 >=3 and !lexique
+    lexique = Lexique.find(:first, :conditions => "id not in (#{@liste_mot}) and mot GLOB '#{val.first(val.length-7)}' ") if val.length-7 >=3 and !lexique
+    @liste_mot = "#{@liste_mot},#{lexique.id}" if lexique
+    # lexique ? return lexique.mot : return lexique
     if lexique
-      Rails.logger.debug"normand valeur de mot : #{lexique.mot}"
-      return lexique.mot#condition
+      return lexique.mot
     else
       return lexique
     end
@@ -123,28 +116,27 @@ class Grille < ActiveRecord::Base
 
   def remplir_grille(prng)
     autre = 0
+    @liste_mot = "0"
     begin
 
       sortir = "n"
       bibi = 0
       begin
         begin
-          x = prng.rand(0..7)#9)
+          x = prng.rand(0..9)
           y = prng.rand(0..9)
         end while get_val_x_y(x,y) != "?"
-        sense = 6#prng.rand(0..3)#7)
-      mot = build_requete_et_retourne_mot(sense,x,y)
+        sense = prng.rand(0..7)
+        mot = build_requete_et_retourne_mot(sense,x,y)
 
         if mot
           sortir = "o"
         elsif bibi >= 150
           sortir = "c"
         end
-          bibi += 1
-        Rails.logger.debug "normand valeur de bibi : #{bibi} et valeur de sortir : #{sortir}"
+        bibi += 1
       end while sortir == "n"
       if sortir == "o"
-          Rails.logger.debug "normand voici le mot a mettre : #{mot}"
         case sense
           when 0
             horizontal_droite(mot,x,y)
@@ -165,8 +157,6 @@ class Grille < ActiveRecord::Base
           else
             horizontal_droite(mot,x,y)
         end
-
-      #  pres = "n"
         matrice.each do |lettre|
           if lettre.include?("?")
             sortir = "o"
@@ -179,24 +169,49 @@ class Grille < ActiveRecord::Base
         sortir = "c"
       end
       autre += 1
-         Rails.logger.debug "normand valeur de sortir : #{sortir}"
     end while sortir != "c"
+
+    mot_cacher
+
+  end
+
+  def mot_cacher
+    nbr_lettre = 0
+    matrice.each do |lettres|
+      lettres.each do |lettre|
+        if lettre.include?("?")
+          nbr_lettre += 1
+        end
+      end
+    end
+    lexique = Lexique.find(:first, :conditions => "id not in (#{@liste_mot}) and nbr_lettre ='#{nbr_lettre}'")
+    nbr_lettre = 0
+    Rails.logger.debug "normand voici le mot a cacher : #{lexique.mot}"
+    (0...10).each do |y|
+      (0...10).each do |x|
+         if get_val_x_y(x,y) == "?"
+    Rails.logger.debug "normand lettre ajouter: #{lexique.mot[nbr_lettre]}   a la position (#{x},#{y})"
+           matrice[x.to_i][y.to_i] = lexique.mot[nbr_lettre]
+           nbr_lettre +=1
+         end
+      end
+    end
   end
 
   def horizontal_droite(mot,position_x,position_y)
     mot.each_char do |val|
-  #    Rails.logger.debug"normand valeur de get_val_x_y dans horizontal : #{position_x}, #{position_y}, val #{get_val_x_y(position_x,position_y)}"
       matrice[position_x.to_i][position_y.to_i] = val
       position_x += 1
     end
   end
+
   def horizontal_gauche(mot,position_x,position_y)
     mot.each_char do |val|
-     # Rails.logger.debug"normand valeur de get_val_x_y dans horizontal : #{position_x}, #{position_y}, val #{get_val_x_y(position_x,position_y)}"
       matrice[position_x.to_i][position_y.to_i] = val
       position_x -= 1
     end
   end
+
   def vertical_bas(mot,position_x,position_y)
     mot.each_char do |val|
       matrice[position_x.to_i][position_y.to_i] = val

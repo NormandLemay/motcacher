@@ -41,8 +41,46 @@ class LexiquesController < ApplicationController
   # POST /lexiques.xml
   def create
     @lexique = Lexique.new(params[:lexique])
+#    @lexique1 = Lexique.new
+#    @lexique2 = Lexique.new
+#    @lexique3 = Lexique.new
+#    @lexique4 = Lexique.new
+#    @lexique5 = Lexique.new
+#    @lexique6 = Lexique.new
+#    @lexique7 = Lexique.new
+#    @lexique8 = Lexique.new
+#    @lexique9 = Lexique.new
+#    @lexique11 = Lexique.new
+#    @lexique21 = Lexique.new
+#    @lexique31 = Lexique.new
+#    @lexique41 = Lexique.new
+#    @lexique51 = Lexique.new
+#    @lexique61 = Lexique.new
+#    @lexique71 = Lexique.new
+#    @lexique81 = Lexique.new
+#    @lexique91 = Lexique.new
+#    @lexique1.mot= "opium"
+#    @lexique2.mot= "offre"
+#    @lexique3.mot= "achat"
+#    @lexique4.mot= "negresse"
+#    @lexique5.mot= "negre"
+#    @lexique6.mot= "naufrage"
+#    @lexique7.mot= "mecano"
+#    @lexique8.mot= "majeur"
+#    @lexique9.mot= "laize"
+#    @lexique11.mot= "lache"
+#    @lexique21.mot= "tache"
+#    @lexique31.mot= "igloo"
+#    @lexique41.mot= "inchangee"
+#    @lexique51.mot= "humeral"
+#    @lexique61.mot= "hagard"
+#    @lexique71.mot= "hangard"
+#    @lexique81.mot= "genois"
+#    @lexique91.mot= "gelif"
     respond_to do |format|
-      if @lexique.save
+      if @lexique.save #and @lexique1.save and @lexique2.save and @lexique3.save and @lexique4.save and @lexique5.save and
+        #  @lexique6.save and @lexique7.save and @lexique8.save and @lexique9.save and @lexique11.save and @lexique21.save and @lexique31.save and @lexique41.save and @lexique51.save and
+       #   @lexique61.save and @lexique71.save and @lexique81.save and @lexique91.save
         format.html { redirect_to(@lexique, :notice => 'Lexique was successfully created.') }
         format.xml  { render :xml => @lexique, :status => :created, :location => @lexique }
       else
