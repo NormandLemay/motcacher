@@ -42,8 +42,7 @@ class GrillesController < ApplicationController
   # POST /grilles.xml
   def create
     @grille = Grille.new(params[:grille])
-    @grille.x = 10
-    @grille.y = 10
+    @grille.y = @grille.x
     prng = Random.new(Time.new.to_i)
     @grille.remplir_grille(prng)
     respond_to do |format|

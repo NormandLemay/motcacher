@@ -17,7 +17,7 @@ class Grille < ActiveRecord::Base
     pos_y = y
     case sense
       when 0 #horizontal_droite
-        (x..9).each do |x|
+        (x...self.x).each do |x|
           val = val + get_val_x_y(x,y)
         end
       when 1 #horizontal_gauche
@@ -26,7 +26,7 @@ class Grille < ActiveRecord::Base
           x -=1
         end
       when 2 #vertical bas
-        (pos_y..9).each do
+        (pos_y...self.x).each do
           val = val + get_val_x_y(x,y)
           y +=1
         end
@@ -36,23 +36,23 @@ class Grille < ActiveRecord::Base
           y -=1
         end
       when 4 #diagonale_droite_bas
-        if x < 8 or y < 8
-          (pos_x..(9-pos_y)).each do
+        if x < (self.x-2) or y < (self.x-2)
+          (pos_x..((self.x-1)-pos_y)).each do
             val = val + get_val_x_y(x,y)
             y += 1
             x += 1
           end
         end
       when 5 #diagonale_droite_haut
-        if x < 8 or y > 1
-          if x + y <= 9
+        if x < (self.x-2) or y > 1
+          if x + y <= (self.x-1)
             (0..(pos_y)).each do
               val = val + get_val_x_y(x,y)
               y -= 1
               x += 1
             end
           else
-            (pos_x..9).each do
+            (pos_x...self.x).each do
               val = val + get_val_x_y(x,y)
               y -= 1
               x += 1
@@ -60,15 +60,15 @@ class Grille < ActiveRecord::Base
           end
         end
       when 6 #diagonale_gauche_bas
-        if x > 1 or y < 8
-          if x + y <= 9
+        if x > 1 or y < (self.x-2)
+          if x + y <= (self.x-1)
             (0..pos_x).each do
               val = val + get_val_x_y(x,y)
               y += 1
               x -= 1
             end
           else
-            (pos_y..9).each do
+            (pos_y...self.x).each do
               val = val + get_val_x_y(x,y)
               y += 1
               x -= 1
@@ -92,7 +92,7 @@ class Grille < ActiveRecord::Base
           end
         end
       else
-        (x..9).each do |x|
+        (x...self.x).each do |x|
           val = val + get_val_x_y(x,y)
         end
     end
@@ -105,6 +105,11 @@ class Grille < ActiveRecord::Base
     lexique = Lexique.find(:first, :conditions => "id not in (#{@liste_mot}) and mot GLOB '#{val.first(val.length-5)}' ") if val.length-5 >=3 and !lexique
     lexique = Lexique.find(:first, :conditions => "id not in (#{@liste_mot}) and mot GLOB '#{val.first(val.length-6)}' ") if val.length-6 >=3 and !lexique
     lexique = Lexique.find(:first, :conditions => "id not in (#{@liste_mot}) and mot GLOB '#{val.first(val.length-7)}' ") if val.length-7 >=3 and !lexique
+    lexique = Lexique.find(:first, :conditions => "id not in (#{@liste_mot}) and mot GLOB '#{val.first(val.length-8)}' ") if val.length-8 >=3 and !lexique
+    lexique = Lexique.find(:first, :conditions => "id not in (#{@liste_mot}) and mot GLOB '#{val.first(val.length-9)}' ") if val.length-9 >=3 and !lexique
+    lexique = Lexique.find(:first, :conditions => "id not in (#{@liste_mot}) and mot GLOB '#{val.first(val.length-10)}' ") if val.length-10 >=3 and !lexique
+    lexique = Lexique.find(:first, :conditions => "id not in (#{@liste_mot}) and mot GLOB '#{val.first(val.length-11)}' ") if val.length-11 >=3 and !lexique
+    lexique = Lexique.find(:first, :conditions => "id not in (#{@liste_mot}) and mot GLOB '#{val.first(val.length-12)}' ") if val.length-12 >=3 and !lexique
     @liste_mot = "#{@liste_mot},#{lexique.id}" if lexique
     # lexique ? return lexique.mot : return lexique
     if lexique
@@ -123,8 +128,8 @@ class Grille < ActiveRecord::Base
       bibi = 0
       begin
         begin
-          x = prng.rand(0..9)
-          y = prng.rand(0..9)
+          x = prng.rand(0...self.x)
+          y = prng.rand(0...self.x)
         end while get_val_x_y(x,y) != "?"
         sense = prng.rand(0..7)
         mot = build_requete_et_retourne_mot(sense,x,y)
@@ -165,7 +170,7 @@ class Grille < ActiveRecord::Base
           end
         end
       end
-      if autre >= 30
+      if autre >= 1500
         sortir = "c"
       end
       autre += 1
@@ -185,14 +190,16 @@ class Grille < ActiveRecord::Base
       end
     end
     lexique = Lexique.find(:first, :conditions => "id not in (#{@liste_mot}) and nbr_lettre ='#{nbr_lettre}'")
-    @mot_cache = lexique.id
-    nbr_lettre = 0
-    (0...10).each do |y|
-      (0...10).each do |x|
-         if get_val_x_y(x,y) == "?"
-           matrice[x.to_i][y.to_i] = lexique.mot[nbr_lettre]
-           nbr_lettre +=1
-         end
+    if lexique
+      @mot_cache = lexique.id
+      nbr_lettre = 0
+      (0...self.x).each do |y|
+        (0...self.x).each do |x|
+           if get_val_x_y(x,y) == "?"
+             matrice[x.to_i][y.to_i] = lexique.mot[nbr_lettre]
+             nbr_lettre +=1
+           end
+        end
       end
     end
   end
@@ -226,23 +233,23 @@ class Grille < ActiveRecord::Base
   end
 
   def diagonale_droite_bas(mot,position_x,position_y)
-    if position_x < 8 or position_y < 8
+   # if position_x < 8 or position_y < 8
       mot.each_char do |val|
         matrice[position_x.to_i][position_y.to_i] = val
         position_y += 1
         position_x += 1
       end
-    end
+ #   end
   end
 
   def diagonale_droite_haut(mot,position_x,position_y)
-    if position_x < 8 or position_y > 1
+ #   if position_x < 8 or position_y > 1
       mot.each_char do |val|
         matrice[position_x.to_i][position_y.to_i] = val
         position_y -= 1
         position_x += 1
       end
-    end
+ #   end
   end
 
   def diagonale_gauche_bas(mot,position_x,position_y)
@@ -264,8 +271,10 @@ class Grille < ActiveRecord::Base
 
   protected
   def init_matrice
-    @matrice = []
-    (1..10).each {@matrice << ["?"] * 10 }
+    if self.x
+      @matrice = []
+      (1..self.x).each {@matrice << ["?"] * self.x }
+    end
   end
 
   def matrice
@@ -278,8 +287,8 @@ class Grille < ActiveRecord::Base
   end
 
   def grid_name
-    self.x ||= 10
-    self.y ||= 10
+#    self.x ||= 10
+#    self.y ||= 10
     self.lettres = matrice.to_yaml
     self.listes_mots= @liste_mot
     self.mot_cache=@mot_cache
