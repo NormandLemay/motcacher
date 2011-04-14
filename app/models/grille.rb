@@ -97,21 +97,20 @@ class Grille < ActiveRecord::Base
         end
     end
     lexique = ""
-    lexique = Lexique.find(:first, :conditions => "id not in (#{@liste_mot}) and mot GLOB '#{val}'")
-    lexique = Lexique.find(:first, :conditions => "id not in (#{@liste_mot}) and mot GLOB '#{val.first(val.length-1)}' ") if val.length-1 >=3 and !lexique
-    lexique = Lexique.find(:first, :conditions => "id not in (#{@liste_mot}) and mot GLOB '#{val.first(val.length-2)}' ") if val.length-2 >=3 and !lexique
-    lexique = Lexique.find(:first, :conditions => "id not in (#{@liste_mot}) and mot GLOB '#{val.first(val.length-3)}' ") if val.length-3 >=3 and !lexique
-    lexique = Lexique.find(:first, :conditions => "id not in (#{@liste_mot}) and mot GLOB '#{val.first(val.length-4)}' ") if val.length-4 >=3 and !lexique
-    lexique = Lexique.find(:first, :conditions => "id not in (#{@liste_mot}) and mot GLOB '#{val.first(val.length-5)}' ") if val.length-5 >=3 and !lexique
-    lexique = Lexique.find(:first, :conditions => "id not in (#{@liste_mot}) and mot GLOB '#{val.first(val.length-6)}' ") if val.length-6 >=3 and !lexique
-    lexique = Lexique.find(:first, :conditions => "id not in (#{@liste_mot}) and mot GLOB '#{val.first(val.length-7)}' ") if val.length-7 >=3 and !lexique
-    lexique = Lexique.find(:first, :conditions => "id not in (#{@liste_mot}) and mot GLOB '#{val.first(val.length-8)}' ") if val.length-8 >=3 and !lexique
-    lexique = Lexique.find(:first, :conditions => "id not in (#{@liste_mot}) and mot GLOB '#{val.first(val.length-9)}' ") if val.length-9 >=3 and !lexique
-    lexique = Lexique.find(:first, :conditions => "id not in (#{@liste_mot}) and mot GLOB '#{val.first(val.length-10)}' ") if val.length-10 >=3 and !lexique
-    lexique = Lexique.find(:first, :conditions => "id not in (#{@liste_mot}) and mot GLOB '#{val.first(val.length-11)}' ") if val.length-11 >=3 and !lexique
-    lexique = Lexique.find(:first, :conditions => "id not in (#{@liste_mot}) and mot GLOB '#{val.first(val.length-12)}' ") if val.length-12 >=3 and !lexique
+    lexique = Lexique.find(:first, :conditions => "id not in (#{@liste_mot}) and mot GLOB '#{val}'", :order=>"RANDOM()")
+    lexique = Lexique.find(:first, :conditions => "id not in (#{@liste_mot}) and mot GLOB '#{val.first(val.length-1)}' ", :order=>"RANDOM()") if val.length-1 >=3 and !lexique
+    lexique = Lexique.find(:first, :conditions => "id not in (#{@liste_mot}) and mot GLOB '#{val.first(val.length-2)}' ", :order=>"RANDOM()") if val.length-2 >=3 and !lexique
+    lexique = Lexique.find(:first, :conditions => "id not in (#{@liste_mot}) and mot GLOB '#{val.first(val.length-3)}' ", :order=>"RANDOM()") if val.length-3 >=3 and !lexique
+    lexique = Lexique.find(:first, :conditions => "id not in (#{@liste_mot}) and mot GLOB '#{val.first(val.length-4)}' ", :order=>"RANDOM()") if val.length-4 >=3 and !lexique
+    lexique = Lexique.find(:first, :conditions => "id not in (#{@liste_mot}) and mot GLOB '#{val.first(val.length-5)}' ", :order=>"RANDOM()") if val.length-5 >=3 and !lexique
+    lexique = Lexique.find(:first, :conditions => "id not in (#{@liste_mot}) and mot GLOB '#{val.first(val.length-6)}' ", :order=>"RANDOM()") if val.length-6 >=3 and !lexique
+    lexique = Lexique.find(:first, :conditions => "id not in (#{@liste_mot}) and mot GLOB '#{val.first(val.length-7)}' ", :order=>"RANDOM()") if val.length-7 >=3 and !lexique
+    lexique = Lexique.find(:first, :conditions => "id not in (#{@liste_mot}) and mot GLOB '#{val.first(val.length-8)}' ", :order=>"RANDOM()") if val.length-8 >=3 and !lexique
+    lexique = Lexique.find(:first, :conditions => "id not in (#{@liste_mot}) and mot GLOB '#{val.first(val.length-9)}' ", :order=>"RANDOM()") if val.length-9 >=3 and !lexique
+    lexique = Lexique.find(:first, :conditions => "id not in (#{@liste_mot}) and mot GLOB '#{val.first(val.length-10)}' ", :order=>"RANDOM()") if val.length-10 >=3 and !lexique
+    lexique = Lexique.find(:first, :conditions => "id not in (#{@liste_mot}) and mot GLOB '#{val.first(val.length-11)}' ", :order=>"RANDOM()") if val.length-11 >=3 and !lexique
+    lexique = Lexique.find(:first, :conditions => "id not in (#{@liste_mot}) and mot GLOB '#{val.first(val.length-12)}' ", :order=>"RANDOM()") if val.length-12 >=3 and !lexique
     @liste_mot = "#{@liste_mot},#{lexique.id}" if lexique
-    # lexique ? return lexique.mot : return lexique
     if lexique
       return lexique.mot
     else
@@ -136,7 +135,7 @@ class Grille < ActiveRecord::Base
 
         if mot
           sortir = "o"
-        elsif bibi >= 150
+        elsif bibi >= 15#0
           sortir = "c"
         end
         bibi += 1
@@ -170,13 +169,14 @@ class Grille < ActiveRecord::Base
           end
         end
       end
-      if autre >= 1500
+      if autre >= 150
         sortir = "c"
       end
       autre += 1
+      Rails.logger.debug "normand sortir : #{sortir} : autre : #{autre}"
     end while sortir != "c"
 
-    mot_cacher
+  #  mot_cacher
 
   end
 
@@ -233,23 +233,19 @@ class Grille < ActiveRecord::Base
   end
 
   def diagonale_droite_bas(mot,position_x,position_y)
-   # if position_x < 8 or position_y < 8
       mot.each_char do |val|
         matrice[position_x.to_i][position_y.to_i] = val
         position_y += 1
         position_x += 1
       end
- #   end
   end
 
   def diagonale_droite_haut(mot,position_x,position_y)
- #   if position_x < 8 or position_y > 1
       mot.each_char do |val|
         matrice[position_x.to_i][position_y.to_i] = val
         position_y -= 1
         position_x += 1
       end
- #   end
   end
 
   def diagonale_gauche_bas(mot,position_x,position_y)
@@ -287,8 +283,6 @@ class Grille < ActiveRecord::Base
   end
 
   def grid_name
-#    self.x ||= 10
-#    self.y ||= 10
     self.lettres = matrice.to_yaml
     self.listes_mots= @liste_mot
     self.mot_cache=@mot_cache

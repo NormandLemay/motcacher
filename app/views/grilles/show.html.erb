@@ -37,7 +37,7 @@
         <% lexiques = Lexique.find(:all, :conditions => "id in (#{@grilles.listes_mots})", :order => "mot asc") %>
         <% lexiques.each do |lexique| %>
             <tr>
-              <td class='vide' onclick="cSwap(this);"><%= lexique.mot %></td>
+              <td class='vide' onclick="cSwap(this);"><%= lexique.mot %>:</td>
             </tr>
         <% end %>
       </table>

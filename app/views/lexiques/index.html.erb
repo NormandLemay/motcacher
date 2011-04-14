@@ -9,9 +9,10 @@
 
 <% @lexiques.each do |lexique| %>
   <tr>
-    <td><%= lexique.mot %></td>
+    <td><%= lexique.mot %>:</td>
     <td><%= lexique.nbr_lettre %></td>
     <td><%= link_to 'Edit', edit_lexique_path(lexique) %></td>
+    <td><%= link_to 'Destroy', lexique, :method => :delete %></td>
   </tr>
 <% end %>
 </table>
