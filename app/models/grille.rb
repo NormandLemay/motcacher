@@ -121,6 +121,7 @@ class Grille < ActiveRecord::Base
   def remplir_grille(prng)
     autre = 0
     @liste_mot = "0"
+    @nbr_lettre_cacher = prng.rand(3...self.x)
     begin
 
       sortir = "n"
@@ -135,7 +136,7 @@ class Grille < ActiveRecord::Base
 
         if mot
           sortir = "o"
-        elsif bibi >= 15#0
+        elsif bibi >= 150
           sortir = "c"
         end
         bibi += 1
@@ -161,44 +162,38 @@ class Grille < ActiveRecord::Base
           else
             horizontal_droite(mot,x,y)
         end
-        matrice.each do |lettre|
-          if lettre.include?("?")
-            sortir = "o"
-          else
-            sortir = "c" if sortir != "o"
-          end
+      end
+
+    @nbr_case_restant  = 0
+    matrice.each do |lettres|
+      lettres.each do |lettre|
+        if lettre.include?("?")
+          @nbr_case_restant  += 1
         end
       end
-      if autre >= 150
+    end
+      if autre >= 150 or @nbr_case_restant <= @nbr_lettre_cacher
         sortir = "c"
       end
       autre += 1
-      Rails.logger.debug "normand sortir : #{sortir} : autre : #{autre}"
     end while sortir != "c"
 
-  #  mot_cacher
+    mot_cacher
 
   end
 
   def mot_cacher
+   # Rails.logger.debug "normand mot_cacher nbr_case_restant : #{@nbr_case_restant}"
     nbr_lettre = 0
-    matrice.each do |lettres|
-      lettres.each do |lettre|
-        if lettre.include?("?")
-          nbr_lettre += 1
-        end
-      end
-    end
-    lexique = Lexique.find(:first, :conditions => "id not in (#{@liste_mot}) and nbr_lettre ='#{nbr_lettre}'")
-    if lexique
-      @mot_cache = lexique.id
-      nbr_lettre = 0
-      (0...self.x).each do |y|
-        (0...self.x).each do |x|
-           if get_val_x_y(x,y) == "?"
-             matrice[x.to_i][y.to_i] = lexique.mot[nbr_lettre]
-             nbr_lettre +=1
-           end
+    lexique = Lexique.find(:first, :conditions => "id not in (#{@liste_mot}) and nbr_lettre ='#{@nbr_case_restant}'", :order=>"RANDOM()")
+
+   # Rails.logger.debug "normand mot cacher: #{lexique.mot}"
+    @mot_cache = lexique.id
+    (0...self.x).each do |y|
+      (0...self.x).each do |x|
+        if get_val_x_y(x,y) == "?"
+          matrice[x.to_i][y.to_i] = lexique.mot[nbr_lettre]
+          nbr_lettre +=1
         end
       end
     end
@@ -233,19 +228,19 @@ class Grille < ActiveRecord::Base
   end
 
   def diagonale_droite_bas(mot,position_x,position_y)
-      mot.each_char do |val|
-        matrice[position_x.to_i][position_y.to_i] = val
-        position_y += 1
-        position_x += 1
-      end
+    mot.each_char do |val|
+      matrice[position_x.to_i][position_y.to_i] = val
+      position_y += 1
+      position_x += 1
+    end
   end
 
   def diagonale_droite_haut(mot,position_x,position_y)
-      mot.each_char do |val|
-        matrice[position_x.to_i][position_y.to_i] = val
-        position_y -= 1
-        position_x += 1
-      end
+    mot.each_char do |val|
+      matrice[position_x.to_i][position_y.to_i] = val
+      position_y -= 1
+      position_x += 1
+    end
   end
 
   def diagonale_gauche_bas(mot,position_x,position_y)
