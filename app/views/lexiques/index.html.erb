@@ -1,22 +1,8 @@
 <h1>Listing lexiques</h1>
+<% javascript "pagination" %>
 
-<table>
-  <tr>
-    <th>Mot</th>
-    <th>Nbr lettre</th>
-    <th></th>
-  </tr>
+<div id="lexiques">
+  <%= render 'lexiques' %>
+</div>
 
-<% @lexiques.each do |lexique| %>
-  <tr>
-    <td><%= lexique.mot %>:</td>
-    <td><%= lexique.nbr_lettre %></td>
-    <td><%= link_to 'Edit', edit_lexique_path(lexique) %></td>
-    <td><%= link_to 'Destroy', lexique, :method => :delete %></td>
-  </tr>
-<% end %>
-</table>
-
-<br />
-
-<%= link_to 'New Lexique', new_lexique_path %>
+<p><%= link_to 'New Lexique', new_lexique_path %></p>

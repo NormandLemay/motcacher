@@ -1,23 +1,7 @@
 <h1>Listing grilles</h1>
 
-<table>
-  <tr>
-    <th>Name</th>
-    <th></th>
-    <th></th>
-    <th></th>
-  </tr>
+<% javascript "pagination" %>
 
-<% @grilles.each do |grille| %>
-  <tr>
-    <td><%= grille.name %></td>
-    <td><%= link_to 'Show', grille %></td>
-    <td><%= link_to 'Edit', edit_grille_path(grille) %></td>
-    <td><%= link_to 'Destroy', grille, :confirm => 'Are you sure?', :method => :delete %></td>
-  </tr>
-<% end %>
-</table>
-
-<br />
+<%= render :partial => 'grilles' %>
 
 <%= link_to 'New Grille', new_grille_path %>

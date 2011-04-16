@@ -1,0 +1,14 @@
+<%= will_paginate @grilles %>
+
+<% for grille in @grilles %>
+    <div class="lexique">
+      <h3>
+        <%= link_to h(grille.display_name), grille %>
+      </h3>
+      <div class="actions">
+        <%= link_to 'Show', grille %>
+        <%= link_to 'Destroy', grille, :confirm => 'Are you sure?', :method => :delete %>
+      </div>
+    </div>
+<% end %>
+<%= will_paginate @grilles %>

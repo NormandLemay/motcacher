@@ -3,12 +3,7 @@ class GrillesController < ApplicationController
   # GET /grilles.xml
 
   def index
-    @grilles = Grille.all
-
-    respond_to do |format|
-      format.html # index.html.erb
-      format.xml  { render :xml => @grilles }
-    end
+    @grilles = Grille.paginate(:per_page => 20, :page => params[:page])
   end
 
   # GET /grilles/1

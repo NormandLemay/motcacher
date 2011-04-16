@@ -1,0 +1,14 @@
+<%= will_paginate @lexiques %>
+
+<% for lexique in @lexiques %>
+    <div class="lexique">
+      <h3>
+        <%= link_to h(lexique.mot), lexique %>
+      </h3>
+      <div class="actions">
+        <%= link_to 'Edit', edit_lexique_path(lexique) %>
+        <%= link_to 'Destroy', lexique, :method => :delete %>
+      </div>
+    </div>
+<% end %>
+<%= will_paginate @lexiques %>
