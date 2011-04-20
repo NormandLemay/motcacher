@@ -1,0 +1,28 @@
+<%= afficher_liste_mots %>
+
+<div id="header">
+    <h1>Mots</h1>
+</div>
+<div id="left">
+  <% lexiques = Lexique.find(:all, :conditions => "id in (#{@grilles.listes_mots})", :order => "mot asc") %>
+ <table>
+  <% lexiques.each do |lexique| %>
+
+   <tr><td class='vide'> <%= lexique.mot %> </td></tr>
+  <% end %>
+  </table>
+</div>
+<div id="right">
+  <% lexiques = Lexique.find(:all, :conditions => "id in (#{@grilles.listes_mots})", :order => "mot asc") %>
+  <% lexiques.each do |lexique| %>
+    <%= lexique.mot %><br>
+  <% end %>
+</div>
+<div id="middle">
+  <% lexiques = Lexique.find(:all, :conditions => "id in (#{@grilles.listes_mots})", :order => "mot asc") %>
+  <% lexiques.each do |lexique| %>
+    <%= lexique.mot %><br>
+  <% end %>
+</div>
+
+

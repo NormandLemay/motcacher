@@ -10,22 +10,12 @@ class GrillesController < ApplicationController
   # GET /grilles/1.xml
   def show
     @grilles = Grille.find(params[:id])
-    # @matrice = @grilles.rebuild_matrice
-    respond_to do |format|
-      format.html # show.html.erb
-      format.xml  { render :xml => @grille }
-    end
   end
 
   # GET /grilles/new
   # GET /grilles/new.xml
   def new
     @grille = Grille.new()
-
-    respond_to do |format|
-      format.html # new.html.erb
-      format.xml  { render :xml => @grille }
-    end
   end
 
   # GET /grilles/1/edit

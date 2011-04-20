@@ -12,41 +12,22 @@
 </script>
 
 <p id="notice"><%= notice %></p>
-<%= @grilles.display_name %>
-<table>
-  <tr>
-    <td>
-      <table border="2">
-        <% (0...@grilles.y).each do |y| %>
-            <tr>
-              <% (0...@grilles.x).each do |x| %>
-                  <td class='vide' width="30" align="center" height="30" onclick="cSwap(this);"><%= @grilles.get_val_x_y(x,y).upcase %></td>
-              <% end %>
-            </tr>
-        <% end %>
-      </table>
-    </td>
-    <td></td><td></td>
-    <td>
-      <table>
-        <tr>
-          <th>Mot a trouver</th>
-        </tr>
+<h3><%= @grilles.display_name %></h3>
 
-        <% lexiques = Lexique.find(:all, :conditions => "id in (#{@grilles.listes_mots})", :order => "mot asc") %>
-        <% lexiques.each do |lexique| %>
-            <tr>
-              <td class='vide' onclick="cSwap(this);"><%= lexique.mot %>:</td>
-            </tr>
+<table border="2">
+  <% (0...@grilles.y).each do |y| %>
+      <tr>
+        <% (0...@grilles.x).each do |x| %>
+            <td class='vide' width="30" align="center" height="30" onclick="cSwap(this);"><%= @grilles.get_val_x_y(x,y).upcase %></td>
         <% end %>
-      </table>
-    </td>
-  </tr>
-  <tr>
-    <div class="field">
-      mot caché :<input id="motCahe" type="text" size="25">
-      <button onclick="alert('allo');">Valider</button>
-    </div>
-  </tr>
+      </tr>
+  <% end %>
 </table>
+
+<div id="mot_a_chercher">
+  <%= render 'liste_mots' %>
+</div>
+<!--mot caché :<input id="motCahe" type="text" size="25">-->
+<!--<button onclick="alert('allo');">Valider</button>-->
+
 <%= link_to 'Back', grilles_path %>

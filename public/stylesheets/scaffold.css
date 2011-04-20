@@ -58,3 +58,31 @@ div.field, div.actions {
 }
 .plein { background: #ff3300
 }
+div#header {
+    clear: both;
+    height: 50px;
+    /*background-color: aqua;*/
+    padding: 1px;
+}
+div#left {
+    float: left;
+    width: 33%;
+    /*background-color: red;*/
+}
+div#right {
+    float: right;
+    width: 33%;
+    /*background-color: green;*/
+}
+div#middle {
+    padding: 0px 160px 5px 160px;
+    /*margin: 0px;*/
+    /*background-color: silver;*/
+}
+div#footer {
+    clear: both;
+    /*background-color: yellow;*/
+}
+div#mot_a_chercher{
+    width: 33%;
+}
