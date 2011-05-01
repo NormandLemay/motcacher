@@ -11,4 +11,10 @@ class Lexique < ActiveRecord::Base
              :conditions => ['mot like ?', "%#{search}%"], :order => 'mot'
   end
 
+  def self.obtenir_liste_mot(ids)
+    liste = []
+    lexiques = Lexique.find(:all, :conditions => "id in (#{ids})", :order => "mot asc")
+    lexiques.each {|lexique| liste << lexique.mot}
+    liste
+  end
 end

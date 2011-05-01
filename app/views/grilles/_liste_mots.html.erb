@@ -1,9 +1,7 @@
 <div id="header">
   <h1>Mots</h1>
 </div>
-<% liste = [] %>
-<% lexiques = Lexique.find(:all, :conditions => "id in (#{@grilles.listes_mots})", :order => "mot asc") %>
-<% lexiques.each {|lexique| liste << lexique.mot} %>
+<% liste = Lexique.obtenir_liste_mot(@grilles.listes_mots) %>
 <% liste.each_slice(liste.count()/3) do |mots| %>
     <div id="left" >
     <% mots.each do |mot| %>

@@ -14,11 +14,11 @@
 <p id="notice"><%= notice %></p>
 <h3><%= @grilles.display_name %></h3>
 
-<table border="2">
+<table border="1">
   <% (0...@grilles.y).each do |y| %>
       <tr>
         <% (0...@grilles.x).each do |x| %>
-            <td class='vide' width="30" align="center" height="30" onclick="cSwap(this);"><%= @grilles.get_val_x_y(x,y).upcase %></td>
+            <td class='vide' width="20" align="center" height="20" onclick="cSwap(this);"><%= @grilles.get_val_x_y(x,y).upcase %></td>
         <% end %>
       </tr>
   <% end %>

@@ -13,7 +13,8 @@
 
   <div class="field">
     <%= f.label :name %><%= f.text_field :name %><br />
-    nombre de carreau<%= f.text_field :x %><br />
+    nombre de carreau<%= f.select(:x, options_for_select(["10 x 10", "15 x 15", "20 x 20"])) %><br />
+
   </div>
   <div class="actions">
     <%= f.submit %>

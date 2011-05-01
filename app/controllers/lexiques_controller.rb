@@ -2,7 +2,7 @@ class LexiquesController < ApplicationController
   # GET /lexiques
   # GET /lexiques.xml
   def index
-    @lexiques = Lexique.paginate(:per_page => 20, :page => params[:page])
+    @lexiques = Lexique.paginate(:per_page => 20, :page => params[:page], :order => "mot asc")
   end
 
   # GET /lexiques/1
