@@ -13,21 +13,9 @@
 
 <p id="notice"><%= notice %></p>
 <h3><%= @grilles.display_name %></h3>
-
-<table border="1">
-  <% (0...@grilles.y).each do |y| %>
-      <tr>
-        <% (0...@grilles.x).each do |x| %>
-            <td class='vide' width="20" align="center" height="20" onclick="cSwap(this);"><%= @grilles.get_val_x_y(x,y).upcase %></td>
-        <% end %>
-      </tr>
-  <% end %>
-</table>
-
-<div id="mot_a_chercher">
   <%= render 'liste_mots' %>
-</div>
+  <%= afficher_grille %>
 <!--mot caché :<input id="motCahe" type="text" size="25">-->
 <!--<button onclick="alert('allo');">Valider</button>-->
 
-<%= link_to 'Back', grilles_path %>
+

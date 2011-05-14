@@ -8,4 +8,30 @@ module GrillesHelper
       return 'Non'
     end
   end
+
+  def afficher_liste_mots
+    liste = Lexique.obtenir_liste_mot(@grilles.listes_mots)
+    result =""
+    liste.each_slice(liste.count()/3)do |mots|
+      result +="<div id='right'>"
+      mots.each do |mot|
+        result +="<span class='vide' onclick='cSwap(this)'>#{mot}</span><br>"
+      end
+      result += "</div>"
+    end
+    result.html_safe
+  end
+  def afficher_grille
+    result =""
+    result += "<table border='1'>"
+    (0...@grilles.y).each do |y|
+      result += "<tr>"
+      (0...@grilles.x).each do |x|
+        result+="<td class='vide' width='20' align='center' height='20' onclick='cSwap(this);'>#{@grilles.get_val_x_y(x,y).upcase}</td>"
+      end
+      result+="</tr>"
+    end
+    result +="</table>"
+    result.html_safe
+  end
 end

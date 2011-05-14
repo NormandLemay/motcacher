@@ -4,6 +4,7 @@ body, p, ol, ul, td {
     font-family: verdana, arial, helvetica, sans-serif;
     font-size:   13px;
     line-height: 18px;
+    background-color: #009999;
 }
 
 pre {
@@ -54,7 +55,7 @@ div.field, div.actions {
     font-size: 12px;
     list-style: square;
 }
-.vide { background: #ffffff
+.vide { background: #33ff99
 }
 .plein { background: #ff3300
 }
@@ -64,6 +65,9 @@ div#header {
     /*background-color: aqua;*/
     padding: 1px;
 }
+div#max{
+   width: 100%;
+}
 div#left {
     float: left;
     width: 33%;
@@ -71,7 +75,8 @@ div#left {
 }
 div#right {
     float: right;
-    width: 33%;
+    width: 10%;
+    /*background-color: #33ff99;*/
     /*background-color: green;*/
 }
 div#middle {
@@ -85,4 +90,7 @@ div#footer {
 }
 div#mot_a_chercher{
     width: 33%;
+}
+span#vide{
+    /*background-color: #33ff99;*/
 }
