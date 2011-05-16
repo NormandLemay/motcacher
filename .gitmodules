@@ -1,0 +1,3 @@
+[submodule "vendor/plugins/capistrano-site5"]
+	path = vendor/plugins/capistrano-site5
+	url = git@github.com:dquimper/capistrano-site5.git
