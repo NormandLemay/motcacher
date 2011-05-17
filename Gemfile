@@ -9,6 +9,8 @@ if `hostname -s`.chomp != "judith"
   gem 'sqlite3-ruby', :require => 'sqlite3'
 end
 
+gem 'mysql2'
+
 gem 'will_paginate', '3.0.pre'
 
 # Use unicorn as the web server
