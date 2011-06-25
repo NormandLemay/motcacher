@@ -1,0 +1,8 @@
+<% form_for :grille, :url => grille_path(@grilles), :html => { :method => :delete } do |f| %>
+  <h2>Are you sure you want to destroy this project?</h2>
+  <p>
+    <%= submit_tag "Destroy" %>
+    or <%= link_to "cancel", grilles_path %>
+  </p>
+<% end %>
+

@@ -1,0 +1,185 @@
+class Random
+
+# * call-seq: Random.new([seed]) -> prng
+# *
+# * Creates new Mersenne Twister based pseudorandom number generator with
+# * seed.  When the argument seed is omitted, the generator is initialized
+# * with Random.new_seed.
+# *
+# * The argument seed is used to ensure repeatable sequences of random numbers
+# * between different runs of the program.
+# *
+# *     prng = Random.new(1234)
+# *     [ prng.rand, prng.rand ]   #=> [0.191519450378892, 0.622108771039832]
+# *     [ prng.integer(10), prng.integer(1000) ]  #=> [4, 664]
+# *     prng = Random.new(1234)
+# *     [ prng.rand, prng.rand ]   #=> [0.191519450378892, 0.622108771039832]
+
+def random_init(argc, *argv, obj)
+
+    rb_random_t *rnd = get_rnd(obj);
+
+    if (argc == 0)
+        vseed = random_seed();
+
+    else
+        rb_scan_args(argc, argv, "01", &vseed);
+    end
+ #   rnd = rand_init(&rnd->mt, vseed);
+    return obj;
+end
+#/*
+# *  call-seq:
+# *     rand(max=0)    -> number
+# *
+# *  Converts <i>max</i> to an integer using max1 =
+# *  max<code>.to_i.abs</code>. If _max_ is +nil+ the result is zero, returns a
+# *  pseudorandom floating point number greater than or equal to 0.0 and
+# *  less than 1.0. Otherwise, returns a pseudorandom integer greater
+# *  than or equal to zero and less than max1. <code>Kernel::srand</code>
+# *  may be used to ensure repeatable sequences of random numbers between
+# *  different runs of the program. Ruby currently uses a modified
+# *  Mersenne Twister with a period of 2**19937-1.
+# *
+# *     srand 1234                 #=> 0
+# *     [ rand,  rand ]            #=> [0.191519450163469, 0.49766366626136]
+# *     [ rand(10), rand(1000) ]   #=> [6, 817]
+# *     srand 1234                 #=> 1234
+# *     [ rand,  rand ]            #=> [0.191519450163469, 0.49766366626136]
+# */
+
+def rb_f_rand(argc, *argv, obj)
+
+    VALUE vmax, r;
+    struct MT *mt = default_mt();
+
+    if (argc == 0) goto zero_arg;
+    rb_scan_args(argc, argv, "01", &vmax);
+    if (NIL_P(vmax)) goto zero_arg;
+    vmax = rb_to_int(vmax);
+    if (vmax == INT2FIX(0) || NIL_P(r = rand_int(mt, vmax, 0))) {
+      zero_arg:
+        return DBL2NUM(genrand_real(mt));
+    }
+    return r;
+end
+#/*
+# * call-seq:
+# *     prng.rand -> float
+# *     prng.rand(limit) -> number
+# *
+# * When the argument is an +Integer+ or a +Bignum+, it returns a
+# * random integer greater than or equal to zero and less than the
+# * argument.  Unlike Random.rand, when the argument is a negative
+# * integer or zero, it raises an ArgumentError.
+# *
+# * When the argument is a +Float+, it returns a random floating point
+# * number between 0.0 and _max_, including 0.0 and excluding _max_.
+# *
+# * When the argument _limit_ is a +Range+, it returns a random
+# * number where range.member?(number) == true.
+# *     prng.rand(5..9)  #=> one of [5, 6, 7, 8, 9]
+# *     prng.rand(5...9) #=> one of [5, 6, 7, 8]
+# *     prng.rand(5.0..9.0) #=> between 5.0 and 9.0, including 9.0
+# *     prng.rand(5.0...9.0) #=> between 5.0 and 9.0, excluding 9.0
+# *
+# * +begin+/+end+ of the range have to have subtract and add methods.
+# *
+# * Otherwise, it raises an ArgumentError.
+# */
+static VALUE
+random_rand(int argc, VALUE *argv, VALUE obj)
+{
+    rb_random_t *rnd = get_rnd(obj);
+    VALUE vmax, beg = Qundef, v;
+    int excl = 0;
+
+    if (argc == 0) {
+        return rb_float_new(genrand_real(&rnd->mt));
+    }
+    else if (argc != 1) {
+        rb_raise(rb_eArgError, "wrong number of arguments (%d for 0..1)", argc);
+    }
+    vmax = argv[0];
+    if (NIL_P(vmax)) {
+        v = Qnil;
+    }
+    else if (TYPE(vmax) != T_FLOAT && (v = rb_check_to_integer(vmax, "to_int"), !NIL_P(v))) {
+        v = rand_int(&rnd->mt, vmax = v, 1);
+    }
+    else if (v = rb_check_to_float(vmax), !NIL_P(v)) {
+        double max = float_value(v);
+        if (max > 0.0)
+            v = rb_float_new(max * genrand_real(&rnd->mt));
+        else
+            v = Qnil;
+    }
+    else if ((v = range_values(vmax, &beg, &excl)) != Qfalse) {
+        vmax = v;
+        if (TYPE(vmax) != T_FLOAT && (v = rb_check_to_integer(vmax, "to_int"), !NIL_P(v))) {
+            long max;
+            vmax = v;
+            v = Qnil;
+            if (FIXNUM_P(vmax)) {
+              fixnum:
+                if ((max = FIX2LONG(vmax) - excl) >= 0) {
+                    unsigned long r = limited_rand(&rnd->mt, (unsigned long)max);
+                    v = ULONG2NUM(r);
+                }
+            }
+            else if (BUILTIN_TYPE(vmax) == T_BIGNUM && RBIGNUM_SIGN(vmax) && !rb_bigzero_p(vmax)) {
+                vmax = excl ? rb_big_minus(vmax, INT2FIX(1)) : rb_big_norm(vmax);
+                if (FIXNUM_P(vmax)) {
+                    excl = 0;
+                    goto fixnum;
+                }
+                v = limited_big_rand(&rnd->mt, RBIGNUM(vmax));
+            }
+        }
+        else if (v = rb_check_to_float(vmax), !NIL_P(v)) {
+            double max = float_value(v), r;
+            v = Qnil;
+            if (max > 0.0) {
+                if (excl) {
+                    r = genrand_real(&rnd->mt);
+                }
+                else {
+                    r = genrand_real2(&rnd->mt);
+                }
+                v = rb_float_new(r * max);
+            }
+            else if (max == 0.0 && !excl) {
+                v = rb_float_new(0.0);
+            }
+        }
+    }
+    else {
+        v = Qnil;
+        NUM2LONG(vmax);
+    }
+    if (NIL_P(v)) {
+        VALUE mesg = rb_str_new_cstr("invalid argument - ");
+        rb_str_append(mesg, rb_obj_as_string(argv[0]));
+        rb_exc_raise(rb_exc_new3(rb_eArgError, mesg));
+    }
+    if (beg == Qundef) return v;
+    if (FIXNUM_P(beg) && FIXNUM_P(v)) {
+        long x = FIX2LONG(beg) + FIX2LONG(v);
+        return LONG2NUM(x);
+    }
+    switch (TYPE(v)) {
+      case T_BIGNUM:
+        return rb_big_plus(v, beg);
+      case T_FLOAT: {
+        VALUE f = rb_check_to_float(beg);
+        if (!NIL_P(f)) {
+            RFLOAT_VALUE(v) += RFLOAT_VALUE(f);
+            return v;
+        }
+      }
+      default:
+        return rb_funcall2(beg, id_plus, 1, &v);
+    }
+}
+
+end

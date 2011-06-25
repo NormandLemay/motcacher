@@ -10,11 +10,22 @@
         }
     }
 </script>
+<div class="header">
+	Grilles : <a href="#">10 x 10</a> | <a href="#">15 x 15</a> | <a href="#">20 x 20</a>
+</div>
+<p class="textGridSize">Taille grille <a href="#" class="tgplus">+</a> <a href="#" class="tgmoin">-</a></p>
+<div class="container">
+  <p id="notice"><%= notice %></p>
 
-<p id="notice"><%= notice %></p>
-<h3><%= @grilles.display_name %></h3>
-  <%= render 'liste_mots' %>
-  <%= afficher_grille %>
+  <h3><%= @grilles.display_name %></h3>
+  <div class="grille">
+    <%= afficher_grille %>
+  </div>
+  <div id="mot_a_chercher">
+    <h2>Mots</h2>
+    <%= render 'liste_mots' %>
+  </div>
+</div>
 <!--mot caché :<input id="motCahe" type="text" size="25">-->
 <!--<button onclick="alert('allo');">Valider</button>-->
 

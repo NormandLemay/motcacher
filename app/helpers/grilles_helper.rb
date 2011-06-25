@@ -13,7 +13,7 @@ module GrillesHelper
     liste = Lexique.obtenir_liste_mot(@grilles.listes_mots)
     result =""
     liste.each_slice(liste.count()/3)do |mots|
-      result +="<div id='right'>"
+      result +="<div id='left'>"
       mots.each do |mot|
         result +="<span class='vide' onclick='cSwap(this)'>#{mot}</span><br>"
       end
@@ -21,6 +21,7 @@ module GrillesHelper
     end
     result.html_safe
   end
+
   def afficher_grille
     result =""
     result += "<table border='1'>"
@@ -34,4 +35,9 @@ module GrillesHelper
     result +="</table>"
     result.html_safe
   end
+  def link_to_destroy(name, url, fallback_url)
+    link_to_function name, "confirm_destroy(this, '#{url}')", :href => fallback_url
+  end
+
+
 end

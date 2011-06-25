@@ -1,7 +1,8 @@
-MotCache::Application.routes.draw do
+MotCache::Application.routes.draw do |map|
   resources :grilles
 
   resources :lexiques
+  map.resources :grilles, :member => { :confirm_destroy => :get }
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

@@ -1,6 +1,7 @@
 class GrillesController < ApplicationController
   # GET /grilles
   # GET /grilles.xml
+  skip_before_filter :verify_authenticity_token, :only => [:index, :show, :destroy]
 
   def index
     @grilles = Grille.paginate(:per_page => 20, :page => params[:page])
@@ -60,12 +61,15 @@ class GrillesController < ApplicationController
   # DELETE /grilles/1
   # DELETE /grilles/1.xml
   def destroy
+#    @grille = Grille.find(params[:id])
+#    @grille.destroy
     @grille = Grille.find(params[:id])
     @grille.destroy
-
-    respond_to do |format|
-      format.html { redirect_to(grilles_url) }
-      format.xml  { head :ok }
-    end
+    flash[:notice] = "Successfully destroyed product."
+    redirect_to grilles_url
+#    respond_to do |format|
+#      format.html { redirect_to(grilles_url) }
+#      format.xml  { head :ok }
+#    end
   end
 end
